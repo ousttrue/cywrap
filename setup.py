@@ -16,5 +16,6 @@ if not SRC_CLANG.exists():
 
     http_get(SRC_CLANG_BASE_URL, SRC_CLANG, '__init__.py')
     http_get(SRC_CLANG_BASE_URL, SRC_CLANG, 'cindex.py')
+    http_get(SRC_CLANG_BASE_URL, SRC_CLANG, 'enumerations.py')
 
 setuptools.setup()
