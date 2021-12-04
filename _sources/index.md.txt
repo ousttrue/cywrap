@@ -1,6 +1,11 @@
-# Welcome to cywrap's documentation!
+# cywrap
+
+CYthon WRAPper generator.
+
+<https://github.com/ousttrue/cywrap>
 
 ```{toctree}
+cindex
 get_tu
 ```
 
