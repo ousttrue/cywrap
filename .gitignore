@@ -1,0 +1,3 @@
+*.egg-info
+src/cywrap/_version.py
+src/clang
