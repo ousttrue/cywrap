@@ -2,3 +2,4 @@
 src/cywrap/_version.py
 src/clang
 *.pyc
+build
