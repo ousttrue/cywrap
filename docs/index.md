@@ -7,6 +7,7 @@ clang.cindex による `C/C++` ライブラリの言語バインディング生�
 ```{toctree}
 :maxdepth: 1
 cindex/index
+examples/index
 ```
 
 ## Indices and tables

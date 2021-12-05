@@ -1,18 +1,5 @@
 from typing import NamedTuple, List, Optional
-import pathlib
-from contextlib import contextmanager
 from clang import cindex
-
-
-@contextmanager
-def pushd(new_dir: pathlib.Path):
-    import os
-    previous_dir = os.getcwd()
-    os.chdir(new_dir)
-    try:
-        yield
-    finally:
-        os.chdir(previous_dir)
 
 
 class Unsaved(NamedTuple):

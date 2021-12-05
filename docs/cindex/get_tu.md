@@ -2,7 +2,8 @@
 
 path が parse のエントリポイントとなる。
 
-```{gitinclude} HEAD docs/cindex/get_tu.md
+```{gitinclude} HEAD src/pycindex/get_tu.py
+:language: python
 ```
 
 unsaved file はメモリ上のファイルに仮の名前を与えてパースする仕組み。

@@ -17,7 +17,8 @@ TranslationUnit.cursor が木構造になっているのでこれを走査する
 
 という感じ。
 
-```{gitinclude} HEAD docs/cindex/traverse.py
+```{gitinclude} HEAD src/pycindex/traverse.py
+:language: python
 ```
 
 ## 空のソースをパースしてみる
