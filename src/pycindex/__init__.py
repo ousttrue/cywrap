@@ -30,6 +30,19 @@ def run():
     traverse(tu, filter_imgui)
 
     # generate
+    def get_type(cursor: cindex.Cursor):
+        name = cursor.spelling
+        return (name, cursor.type.spelling)
     for i, cursor_path in enumerate(functions):
         kinds = ', '.join(str(cursor.kind) for cursor in cursor_path)
-        print(f'{i}: {kinds}: {cursor_path[-1].spelling}')
+
+        cursor = cursor_path[-1]
+
+        result_type = cursor.result_type
+        params = [get_type(child) for child in cursor.get_children() if child.kind == cindex.CursorKind.PARM_DECL]
+
+        # print(f'{i}: {kinds}: {cursor_path[-1].spelling}')
+
+        print(f'{result_type.spelling} {cursor.spelling}({", ".join(f"{param_type} {param_name}" for param_name, param_type in params)});')
+
+        break
