@@ -1,8 +1,8 @@
-# cywrap
+# pycindex
 
 CYthon WRAPper generator.
 
-<https://github.com/ousttrue/cywrap>
+<https://github.com/ousttrue/pycindex>
 
 ```{toctree}
 cindex

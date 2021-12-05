@@ -5,10 +5,10 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "cywrap",
+            "name": "pycindex",
             "type": "python",
             "request": "launch",
-            "module": "cywrap",
+            "module": "pycindex",
             "args": [
                 "../imgui/imgui.h"
             ],

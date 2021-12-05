@@ -3,7 +3,7 @@
 <https://github.com/llvm/llvm-project/tree/main/clang/bindings/python/clang>
 
 
-cywrap では `setup.py` で llvm-13.0 のスクリプトをダウンロードします。
+pycindex では `setup.py` で llvm-13.0 のスクリプトをダウンロードします。
 
 ## pypi
 

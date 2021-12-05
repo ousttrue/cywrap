@@ -17,12 +17,12 @@
 
 # -- Project information -----------------------------------------------------
 
-project = 'cywrap'
+project = 'pycindex'
 copyright = '2021, ousttrue'
 author = 'ousttrue'
 
 rst_prolog = """
-:github_url: https://github.com/ousttrue/cywrap
+:github_url: https://github.com/ousttrue/pycindex
 """
 
 # -- General configuration ---------------------------------------------------
