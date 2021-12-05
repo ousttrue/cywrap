@@ -1,10 +1,15 @@
-# Parse and get TranslationUnit
+# C/C++ のソースをパースして TranslaionUnit を得る
 
 path が parse のエントリポイントとなる。
-arguments の与え方で vc の `cl.exe` ようにふるまわせることができる。
+arguments の与え方で vc の `cl.exe` のようにふるまわせることができる。
+
+* -D による define
+* -I による include パス
+* c++17 などの対応レベル
+
+などをよく使う。
 
 ```python
-from clang import cindex
 from typing import List, Optional, NamedTuple
 import sys
 import pathlib
@@ -16,8 +21,8 @@ class Unsaved(NamedTuple):
     content: str
 
 
-def get_tu(path: str, cflags: List[str], *, unsaved: Optional[List[Unsaved]] = None) -> cindex.TranslationUnit:
-    arguments = [
+def get_tu(path: str, *cflags: str, unsaved: Optional[List[Unsaved]] = None) -> cindex.TranslationUnit:
+    arguments = (
         "-x",
         "c++",
         "-target",
@@ -25,7 +30,7 @@ def get_tu(path: str, cflags: List[str], *, unsaved: Optional[List[Unsaved]] = N
         "-fms-compatibility-version=18",
         "-fdeclspec",
         "-fms-compatibility",
-    ] + cflags
+    ) + cflags
 
     # path of libclang.dll
     cindex.Config.library_path = 'C:\\Program Files\\LLVM\\bin'

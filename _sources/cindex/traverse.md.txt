@@ -1,0 +1,69 @@
+# カーソルを走査する
+
+* [ClangのPython bindingを使ったC++の関数定義部の特定](https://qiita.com/subaru44k/items/4e69ec987547011d7e63)
+* <https://eli.thegreenplace.net/2011/07/03/parsing-c-in-python-with-clang>
+
+TranslationUnit.cursor が木構造になっているのでこれを走査する。
+なんの木構造なのかというと `C/C++` のソースの namespace の木構造みたいない感じ？
+`#include` が展開されるので膨大な数のシンボルが出てくる場合がある。
+各カーソルは、型定義や関数定義 `typedef` などの言語要素を指し示す。
+
+例えば、ライブラリの python binding を生成する目的でパーする場合、
+
+* ライブラリの関数を集める(含まれているファイルパスでフィルタし、場合によっては dllexport の有無や命名規則で絞る)
+* 集めた関数の引数と返り値が参照する型の情報をすべて集める(enum, struct, typedef)
+* マクロは鬼門
+
+という感じ。
+
+```python
+def traverse(callback: Callable[[cindex.Cursor], bool], *cursor_path: cindex.Cursor):
+    if callback(*cursor_path):
+        for child in cursor_path[-1].get_children():
+            traverse(callback, *cursor_path, child)
+
+
+def run():
+    # parse header. get TU
+    header = pathlib.Path(sys.argv[1])
+    print(header, header.exists())
+
+    tu = get_tu(str(header))
+    print(tu)
+
+    def print_cursor(*cursor_path: cindex.Cursor):
+        indent = '  ' * len(cursor_path)
+        cursor = cursor_path[-1]
+        print(f'{indent}{cursor.kind}')
+        return True
+    traverse(print_cursor, tu.cursor)
+```
+
+## 空のソースをパースしてみる
+
+```python
+    def test_empty_source(self):
+        source = '''
+'''
+        tu = pycindex.get_tu(
+            'tmp.h', unsaved=[pycindex.Unsaved('tmp.h', source)])
+
+        items = {}
+
+        def callback(*cursor_path: cindex.Cursor):
+            cursor = cursor_path[-1]
+            value = items.get(cursor.kind, 0)
+            items[cursor.kind] = value + 1
+            return True
+        pycindex.traverse(callback, tu.cursor)
+
+        for k, v in items.items():
+            print(k, v)
+```
+
+```
+CursorKind.TRANSLATION_UNIT 1
+CursorKind.MACRO_DEFINITION 358
+```
+
+という結果になった。
