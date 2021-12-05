@@ -1,5 +1,5 @@
 import unittest
-from typing import NamedTuple, Tuple, Any
+from typing import NamedTuple, Any
 import pycindex
 from clang import cindex
 
@@ -24,7 +24,7 @@ class TestTU(unittest.TestCase):
             value = items.get(cursor.kind, 0)
             items[cursor.kind] = value + 1
             return True
-        pycindex.traverse(callback, tu.cursor)
+        pycindex.traverse(tu, callback)
 
         for k, v in items.items():
             print(k, v)
@@ -47,10 +47,9 @@ typedef int INT32;
                         items.append(
                             Item([x.kind for x in cursor_path], location.file.name))
             return True
-        pycindex.traverse(callback, tu.cursor)
+        pycindex.traverse(tu, callback)
         item = items[0]
-        self.assertEqual([cindex.CursorKind.TRANSLATION_UNIT,
-                         cindex.CursorKind.TYPEDEF_DECL], item.cursor_path)
+        self.assertEqual([cindex.CursorKind.TYPEDEF_DECL], item.cursor_path)
         self.assertEqual('tmp.h', item.file)
 
 

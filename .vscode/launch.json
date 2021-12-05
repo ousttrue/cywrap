@@ -5,15 +5,26 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "pycindex",
+            "name": "pycindex:imgui.h",
             "type": "python",
             "request": "launch",
             "module": "pycindex",
             "args": [
-                "../imgui/imgui.h"
+                "../imgui/imgui.h",
             ],
             "console": "integratedTerminal",
             "justMyCode": false
-        }
+        },
+        {
+            "name": "pycindex:CIndex.h",
+            "type": "python",
+            "request": "launch",
+            "module": "pycindex",
+            "args": [
+                "C:/Program Files/LLVM/include/clang-c/Index.h",
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": false
+        },
     ]
 }

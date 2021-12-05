@@ -1,4 +1,4 @@
-# clang.cindex
+# clang.cindex パースと情報収集
 
 ```{toctree}
 :maxdepth: 2

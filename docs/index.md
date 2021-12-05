@@ -1,6 +1,6 @@
 # pycindex
 
-CYthon WRAPper generator.
+clang.cindex による `C/C++` ライブラリの言語バインディング生成に関して。
 
 <https://github.com/ousttrue/pycindex>
 
