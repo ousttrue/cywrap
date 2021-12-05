@@ -1,5 +1,4 @@
-from clang import cindex
-from typing import List, Optional, NamedTuple
+from typing import Optional, NamedTuple, Callable, List
 import sys
 import pathlib
 from clang import cindex
@@ -10,8 +9,8 @@ class Unsaved(NamedTuple):
     content: str
 
 
-def get_tu(path: str, cflags: List[str], *, unsaved: Optional[List[Unsaved]] = None) -> cindex.TranslationUnit:
-    arguments = [
+def get_tu(path: str, *cflags: str, unsaved: Optional[List[Unsaved]] = None) -> cindex.TranslationUnit:
+    arguments = (
         "-x",
         "c++",
         "-target",
@@ -19,7 +18,7 @@ def get_tu(path: str, cflags: List[str], *, unsaved: Optional[List[Unsaved]] = N
         "-fms-compatibility-version=18",
         "-fdeclspec",
         "-fms-compatibility",
-    ] + cflags
+    ) + cflags
 
     # path of libclang.dll
     cindex.Config.library_path = 'C:\\Program Files\\LLVM\\bin'
@@ -32,10 +31,23 @@ def get_tu(path: str, cflags: List[str], *, unsaved: Optional[List[Unsaved]] = N
     return tu
 
 
+def traverse(callback: Callable[[cindex.Cursor], bool], *cursor_path: cindex.Cursor):
+    if callback(*cursor_path):
+        for child in cursor_path[-1].get_children():
+            traverse(callback, *cursor_path, child)
+
+
 def run():
     # parse header. get TU
     header = pathlib.Path(sys.argv[1])
     print(header, header.exists())
 
-    tu = get_tu(str(header), [])
+    tu = get_tu(str(header))
     print(tu)
+
+    def print_cursor(*cursor_path: cindex.Cursor):
+        indent = '  ' * len(cursor_path)
+        cursor = cursor_path[-1]
+        print(f'{indent}{cursor.kind}')
+        return True
+    traverse(print_cursor, tu.cursor)

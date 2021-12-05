@@ -5,8 +5,8 @@ CYthon WRAPper generator.
 <https://github.com/ousttrue/pycindex>
 
 ```{toctree}
-cindex
-get_tu
+:maxdepth: 1
+cindex/index
 ```
 
 ## Indices and tables

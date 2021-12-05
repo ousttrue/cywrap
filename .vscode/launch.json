@@ -12,7 +12,8 @@
             "args": [
                 "../imgui/imgui.h"
             ],
-            "console": "integratedTerminal"
+            "console": "integratedTerminal",
+            "justMyCode": false
         }
     ]
 }
