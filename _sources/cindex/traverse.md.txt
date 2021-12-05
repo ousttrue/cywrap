@@ -1,7 +1,4 @@
-# カーソルを走査する
-
-* [ClangのPython bindingを使ったC++の関数定義部の特定](https://qiita.com/subaru44k/items/4e69ec987547011d7e63)
-* <https://eli.thegreenplace.net/2011/07/03/parsing-c-in-python-with-clang>
+# CXCursor: カーソルを走査する
 
 TranslationUnit.cursor が木構造になっているのでこれを走査する。
 なんの木構造なのかというと `C/C++` のソースの namespace の木構造みたいない感じ？
@@ -16,27 +13,8 @@ TranslationUnit.cursor が木構造になっているのでこれを走査する
 
 という感じ。
 
-```python
-def traverse(callback: Callable[[cindex.Cursor], bool], *cursor_path: cindex.Cursor):
-    if callback(*cursor_path):
-        for child in cursor_path[-1].get_children():
-            traverse(callback, *cursor_path, child)
-
-
-def run():
-    # parse header. get TU
-    header = pathlib.Path(sys.argv[1])
-    print(header, header.exists())
-
-    tu = get_tu(str(header))
-    print(tu)
-
-    def print_cursor(*cursor_path: cindex.Cursor):
-        indent = '  ' * len(cursor_path)
-        cursor = cursor_path[-1]
-        print(f'{indent}{cursor.kind}')
-        return True
-    traverse(print_cursor, tu.cursor)
+```{gitinclude} HEAD src/pycindex/traverse.py
+:language: python
 ```
 
 ## 空のソースをパースしてみる
@@ -55,14 +33,13 @@ def run():
             value = items.get(cursor.kind, 0)
             items[cursor.kind] = value + 1
             return True
-        pycindex.traverse(callback, tu.cursor)
+        pycindex.traverse(callback, tu)
 
         for k, v in items.items():
             print(k, v)
 ```
 
 ```
-CursorKind.TRANSLATION_UNIT 1
 CursorKind.MACRO_DEFINITION 358
 ```
 

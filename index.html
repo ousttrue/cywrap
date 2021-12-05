@@ -18,7 +18,7 @@
     
     <link rel="index" title="索引" href="genindex.html" />
     <link rel="search" title="検索" href="search.html" />
-    <link rel="next" title="clang.cindex" href="cindex/index.html" /> 
+    <link rel="next" title="clang.cindex パースと情報収集" href="cindex/index.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>ナビゲーション</h3>
@@ -27,7 +27,7 @@
           <a href="genindex.html" title="総合索引"
              accesskey="I">索引</a></li>
         <li class="right" >
-          <a href="cindex/index.html" title="clang.cindex"
+          <a href="cindex/index.html" title="clang.cindex パースと情報収集"
              accesskey="N">次へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="#">pycindex  ドキュメント</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">pycindex</a></li> 
@@ -41,18 +41,64 @@
             
   <section class="tex2jax_ignore mathjax_ignore" id="pycindex">
 <h1>pycindex<a class="headerlink" href="#pycindex" title="このヘッドラインへのパーマリンク">¶</a></h1>
-<p>CYthon WRAPper generator.</p>
+<p>clang.cindex による <code class="docutils literal notranslate"><span class="pre">C/C++</span></code> ライブラリの言語バインディング生成に関して。</p>
 <p><a class="reference external" href="https://github.com/ousttrue/pycindex">https://github.com/ousttrue/pycindex</a></p>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="cindex/index.html">clang.cindex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cindex/index.html">clang.cindex パースと情報収集</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="cindex/python_module.html">clang.cindex の python module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="cindex/python_module.html#pypi">pypi</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="cindex/get_tu.html">C/C++ のソースをパースして TranslaionUnit を得る</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="cindex/get_tu.html#compiler">compiler 引数</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cindex/get_tu.html#flags">flags</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="cindex/traverse.html">CXCursor: カーソルを走査する</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="cindex/traverse.html#id1">空のソースをパースしてみる</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="cindex/cursor_kind/index.html">CursorKind 毎の処理</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="cindex/cursor_kind/function_decl.html">FUNCTION_DECL</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="cindex/type/index.html">CXType: 型の処理</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="cindex/type/index.html#id1">基本型</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cindex/type/index.html#cxtype-pointer-cxtype-lvaluereference">CXType_Pointer / CXType_LValueReference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cindex/type/index.html#cxtype-constantarray">CXType_ConstantArray</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cindex/type/index.html#cxtype-dependentsizedarray-cxtype-incompletearray">CXType_DependentSizedArray, CXType_IncompleteArray</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cindex/type/index.html#cxtype-functionproto">CXType_FunctionProto</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cindex/type/index.html#cxtype-typedef">CXType_Typedef</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cindex/type/index.html#cxtype-enum">CXType_Enum</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cindex/type/index.html#cxtype-elaborated">CXType_Elaborated</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cindex/type/index.html#cxtype-record">CXType_Record</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="examples/index.html">使用例</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="examples/imgui.html">ImGui</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="examples/imgui.html#imgui-h">対象を &quot;imgui.h&quot; 内の関数に絞る</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </div>
+<section id="id1">
+<h2>関連<a class="headerlink" href="#id1" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://qiita.com/subaru44k/items/4e69ec987547011d7e63">ClangのPython bindingを使ったC++の関数定義部の特定</a></p></li>
+<li><p><a class="reference external" href="https://eli.thegreenplace.net/2011/07/03/parsing-c-in-python-with-clang">https://eli.thegreenplace.net/2011/07/03/parsing-c-in-python-with-clang</a></p></li>
+<li><p><a class="reference external" href="https://ousttrue.github.io/posts/2021/winter/cindex/">libclang で 言語バインディングを作る</a></p></li>
+<li><p><a class="reference external" href="https://ousttrue.github.io/posts/2021/luajitffi/">libclang で luajit 向けの FFI を生成する</a></p></li>
+</ul>
+</section>
 <section id="indices-and-tables">
 <h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="このヘッドラインへのパーマリンク">¶</a></h2>
 <ul class="simple">
 <li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">索引</span></a></p></li>
-<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">モジュール索引</span></a></p></li>
 <li><p><a class="reference internal" href="search.html"><span class="std std-ref">検索ページ</span></a></p></li>
 </ul>
 </section>
@@ -68,6 +114,7 @@
   <h3><a href="#">目次</a></h3>
   <ul>
 <li><a class="reference internal" href="#">pycindex</a><ul>
+<li><a class="reference internal" href="#id1">関連</a></li>
 <li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
 </ul>
 </li>
@@ -75,7 +122,7 @@
 
   <h4>次のトピックへ</h4>
   <p class="topless"><a href="cindex/index.html"
-                        title="次の章へ">clang.cindex</a></p>
+                        title="次の章へ">clang.cindex パースと情報収集</a></p>
   <div role="note" aria-label="source link">
     <h3>このページ</h3>
     <ul class="this-page-menu">
@@ -104,7 +151,7 @@
           <a href="genindex.html" title="総合索引"
              >索引</a></li>
         <li class="right" >
-          <a href="cindex/index.html" title="clang.cindex"
+          <a href="cindex/index.html" title="clang.cindex パースと情報収集"
              >次へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="#">pycindex  ドキュメント</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">pycindex</a></li> 

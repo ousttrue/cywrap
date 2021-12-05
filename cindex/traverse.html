@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>カーソルを走査する &#8212; pycindex  ドキュメント</title>
+    <title>CXCursor: カーソルを走査する &#8212; pycindex  ドキュメント</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
     
@@ -18,6 +18,7 @@
     
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
+    <link rel="next" title="CursorKind 毎の処理" href="cursor_kind/index.html" />
     <link rel="prev" title="C/C++ のソースをパースして TranslaionUnit を得る" href="get_tu.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
@@ -27,11 +28,14 @@
           <a href="../genindex.html" title="総合索引"
              accesskey="I">索引</a></li>
         <li class="right" >
+          <a href="cursor_kind/index.html" title="CursorKind 毎の処理"
+             accesskey="N">次へ</a> |</li>
+        <li class="right" >
           <a href="get_tu.html" title="C/C++ のソースをパースして TranslaionUnit を得る"
              accesskey="P">前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">pycindex  ドキュメント</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">clang.cindex</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">カーソルを走査する</a></li> 
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">clang.cindex パースと情報収集</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">CXCursor: カーソルを走査する</a></li> 
       </ul>
     </div>  
 
@@ -40,12 +44,8 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <section class="tex2jax_ignore mathjax_ignore" id="id1">
-<h1>カーソルを走査する<a class="headerlink" href="#id1" title="このヘッドラインへのパーマリンク">¶</a></h1>
-<ul class="simple">
-<li><p><a class="reference external" href="https://qiita.com/subaru44k/items/4e69ec987547011d7e63">ClangのPython bindingを使ったC++の関数定義部の特定</a></p></li>
-<li><p><a class="reference external" href="https://eli.thegreenplace.net/2011/07/03/parsing-c-in-python-with-clang">https://eli.thegreenplace.net/2011/07/03/parsing-c-in-python-with-clang</a></p></li>
-</ul>
+  <section class="tex2jax_ignore mathjax_ignore" id="cxcursor">
+<h1>CXCursor: カーソルを走査する<a class="headerlink" href="#cxcursor" title="このヘッドラインへのパーマリンク">¶</a></h1>
 <p>TranslationUnit.cursor が木構造になっているのでこれを走査する。
 なんの木構造なのかというと <code class="docutils literal notranslate"><span class="pre">C/C++</span></code> のソースの namespace の木構造みたいない感じ？
 <code class="docutils literal notranslate"><span class="pre">#include</span></code> が展開されるので膨大な数のシンボルが出てくる場合がある。
@@ -57,30 +57,23 @@
 <li><p>マクロは鬼門</p></li>
 </ul>
 <p>という感じ。</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">traverse</span><span class="p">(</span><span class="n">callback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">cindex</span><span class="o">.</span><span class="n">Cursor</span><span class="p">],</span> <span class="nb">bool</span><span class="p">],</span> <span class="o">*</span><span class="n">cursor_path</span><span class="p">:</span> <span class="n">cindex</span><span class="o">.</span><span class="n">Cursor</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span>
+<span class="kn">from</span> <span class="nn">clang</span> <span class="kn">import</span> <span class="n">cindex</span>
+
+
+<span class="k">def</span> <span class="nf">_traverse</span><span class="p">(</span><span class="n">callback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">cindex</span><span class="o">.</span><span class="n">Cursor</span><span class="p">],</span> <span class="nb">bool</span><span class="p">],</span> <span class="o">*</span><span class="n">cursor_path</span><span class="p">:</span> <span class="n">cindex</span><span class="o">.</span><span class="n">Cursor</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">callback</span><span class="p">(</span><span class="o">*</span><span class="n">cursor_path</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">cursor_path</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">get_children</span><span class="p">():</span>
-            <span class="n">traverse</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="o">*</span><span class="n">cursor_path</span><span class="p">,</span> <span class="n">child</span><span class="p">)</span>
+            <span class="n">_traverse</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="o">*</span><span class="n">cursor_path</span><span class="p">,</span> <span class="n">child</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">run</span><span class="p">():</span>
-    <span class="c1"># parse header. get TU</span>
-    <span class="n">header</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-    <span class="k">print</span><span class="p">(</span><span class="n">header</span><span class="p">,</span> <span class="n">header</span><span class="o">.</span><span class="n">exists</span><span class="p">())</span>
-
-    <span class="n">tu</span> <span class="o">=</span> <span class="n">get_tu</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">header</span><span class="p">))</span>
-    <span class="k">print</span><span class="p">(</span><span class="n">tu</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">print_cursor</span><span class="p">(</span><span class="o">*</span><span class="n">cursor_path</span><span class="p">:</span> <span class="n">cindex</span><span class="o">.</span><span class="n">Cursor</span><span class="p">):</span>
-        <span class="n">indent</span> <span class="o">=</span> <span class="s1">&#39;  &#39;</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">cursor_path</span><span class="p">)</span>
-        <span class="n">cursor</span> <span class="o">=</span> <span class="n">cursor_path</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-        <span class="k">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;{indent}{cursor.kind}&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">True</span>
-    <span class="n">traverse</span><span class="p">(</span><span class="n">print_cursor</span><span class="p">,</span> <span class="n">tu</span><span class="o">.</span><span class="n">cursor</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">traverse</span><span class="p">(</span><span class="n">tu</span><span class="p">:</span> <span class="n">cindex</span><span class="o">.</span><span class="n">TranslationUnit</span><span class="p">,</span> <span class="n">callback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">cindex</span><span class="o">.</span><span class="n">Cursor</span><span class="p">],</span> <span class="nb">bool</span><span class="p">]):</span>
+    <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">tu</span><span class="o">.</span><span class="n">cursor</span><span class="o">.</span><span class="n">get_children</span><span class="p">():</span>
+        <span class="n">_traverse</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="n">child</span><span class="p">)</span>
 </pre></div>
 </div>
-<section id="id2">
-<h2>空のソースをパースしてみる<a class="headerlink" href="#id2" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<section id="id1">
+<h2>空のソースをパースしてみる<a class="headerlink" href="#id1" title="このヘッドラインへのパーマリンク">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="k">def</span> <span class="nf">test_empty_source</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">source</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;</span>
 <span class="s1">&#39;&#39;&#39;</span>
@@ -94,14 +87,13 @@
             <span class="n">value</span> <span class="o">=</span> <span class="n">items</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cursor</span><span class="o">.</span><span class="n">kind</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
             <span class="n">items</span><span class="p">[</span><span class="n">cursor</span><span class="o">.</span><span class="n">kind</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span> <span class="o">+</span> <span class="mi">1</span>
             <span class="k">return</span> <span class="bp">True</span>
-        <span class="n">pycindex</span><span class="o">.</span><span class="n">traverse</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="n">tu</span><span class="o">.</span><span class="n">cursor</span><span class="p">)</span>
+        <span class="n">pycindex</span><span class="o">.</span><span class="n">traverse</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="n">tu</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">items</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">print</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">CursorKind</span><span class="o">.</span><span class="n">TRANSLATION_UNIT</span> <span class="mi">1</span>
-<span class="n">CursorKind</span><span class="o">.</span><span class="n">MACRO_DEFINITION</span> <span class="mi">358</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">CursorKind</span><span class="o">.</span><span class="n">MACRO_DEFINITION</span> <span class="mi">358</span>
 </pre></div>
 </div>
 <p>という結果になった。</p>
@@ -117,8 +109,8 @@
         <div class="sphinxsidebarwrapper">
   <h3><a href="../index.html">目次</a></h3>
   <ul>
-<li><a class="reference internal" href="#">カーソルを走査する</a><ul>
-<li><a class="reference internal" href="#id2">空のソースをパースしてみる</a></li>
+<li><a class="reference internal" href="#">CXCursor: カーソルを走査する</a><ul>
+<li><a class="reference internal" href="#id1">空のソースをパースしてみる</a></li>
 </ul>
 </li>
 </ul>
@@ -126,6 +118,9 @@
   <h4>前のトピックへ</h4>
   <p class="topless"><a href="get_tu.html"
                         title="前の章へ">C/C++ のソースをパースして TranslaionUnit を得る</a></p>
+  <h4>次のトピックへ</h4>
+  <p class="topless"><a href="cursor_kind/index.html"
+                        title="次の章へ">CursorKind 毎の処理</a></p>
   <div role="note" aria-label="source link">
     <h3>このページ</h3>
     <ul class="this-page-menu">
@@ -154,11 +149,14 @@
           <a href="../genindex.html" title="総合索引"
              >索引</a></li>
         <li class="right" >
+          <a href="cursor_kind/index.html" title="CursorKind 毎の処理"
+             >次へ</a> |</li>
+        <li class="right" >
           <a href="get_tu.html" title="C/C++ のソースをパースして TranslaionUnit を得る"
              >前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">pycindex  ドキュメント</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="index.html" >clang.cindex</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">カーソルを走査する</a></li> 
+          <li class="nav-item nav-item-1"><a href="index.html" >clang.cindex パースと情報収集</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">CXCursor: カーソルを走査する</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

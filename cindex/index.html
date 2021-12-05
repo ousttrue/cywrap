@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>clang.cindex &#8212; pycindex  ドキュメント</title>
+    <title>clang.cindex パースと情報収集 &#8212; pycindex  ドキュメント</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
     
@@ -34,7 +34,7 @@
           <a href="../index.html" title="pycindex"
              accesskey="P">前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">pycindex  ドキュメント</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">clang.cindex</a></li> 
+        <li class="nav-item nav-item-this"><a href="">clang.cindex パースと情報収集</a></li> 
       </ul>
     </div>  
 
@@ -44,16 +44,36 @@
           <div class="body" role="main">
             
   <section class="tex2jax_ignore mathjax_ignore" id="clang-cindex">
-<h1>clang.cindex<a class="headerlink" href="#clang-cindex" title="このヘッドラインへのパーマリンク">¶</a></h1>
+<h1>clang.cindex パースと情報収集<a class="headerlink" href="#clang-cindex" title="このヘッドラインへのパーマリンク">¶</a></h1>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="python_module.html">clang.cindex の python module</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="python_module.html#pypi">pypi</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="get_tu.html">C/C++ のソースをパースして TranslaionUnit を得る</a></li>
-<li class="toctree-l1"><a class="reference internal" href="traverse.html">カーソルを走査する</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="traverse.html#id2">空のソースをパースしてみる</a></li>
+<li class="toctree-l1"><a class="reference internal" href="get_tu.html">C/C++ のソースをパースして TranslaionUnit を得る</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="get_tu.html#compiler">compiler 引数</a></li>
+<li class="toctree-l2"><a class="reference internal" href="get_tu.html#flags">flags</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="traverse.html">CXCursor: カーソルを走査する</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="traverse.html#id1">空のソースをパースしてみる</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="cursor_kind/index.html">CursorKind 毎の処理</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="cursor_kind/function_decl.html">FUNCTION_DECL</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="type/index.html">CXType: 型の処理</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="type/index.html#id1">基本型</a></li>
+<li class="toctree-l2"><a class="reference internal" href="type/index.html#cxtype-pointer-cxtype-lvaluereference">CXType_Pointer / CXType_LValueReference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="type/index.html#cxtype-constantarray">CXType_ConstantArray</a></li>
+<li class="toctree-l2"><a class="reference internal" href="type/index.html#cxtype-dependentsizedarray-cxtype-incompletearray">CXType_DependentSizedArray, CXType_IncompleteArray</a></li>
+<li class="toctree-l2"><a class="reference internal" href="type/index.html#cxtype-functionproto">CXType_FunctionProto</a></li>
+<li class="toctree-l2"><a class="reference internal" href="type/index.html#cxtype-typedef">CXType_Typedef</a></li>
+<li class="toctree-l2"><a class="reference internal" href="type/index.html#cxtype-enum">CXType_Enum</a></li>
+<li class="toctree-l2"><a class="reference internal" href="type/index.html#cxtype-elaborated">CXType_Elaborated</a></li>
+<li class="toctree-l2"><a class="reference internal" href="type/index.html#cxtype-record">CXType_Record</a></li>
 </ul>
 </li>
 </ul>
@@ -107,7 +127,7 @@
           <a href="../index.html" title="pycindex"
              >前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">pycindex  ドキュメント</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">clang.cindex</a></li> 
+        <li class="nav-item nav-item-this"><a href="">clang.cindex パースと情報収集</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

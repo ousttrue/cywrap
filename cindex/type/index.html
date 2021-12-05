@@ -1,0 +1,173 @@
+
+<!DOCTYPE html>
+
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>CXType: 型の処理 &#8212; pycindex  ドキュメント</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css" />
+    
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/translations.js"></script>
+    
+    <link rel="index" title="索引" href="../../genindex.html" />
+    <link rel="search" title="検索" href="../../search.html" />
+    <link rel="next" title="使用例" href="../../examples/index.html" />
+    <link rel="prev" title="FUNCTION_DECL" href="../cursor_kind/function_decl.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="総合索引"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="../../examples/index.html" title="使用例"
+             accesskey="N">次へ</a> |</li>
+        <li class="right" >
+          <a href="../cursor_kind/function_decl.html" title="FUNCTION_DECL"
+             accesskey="P">前へ</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">pycindex  ドキュメント</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">clang.cindex パースと情報収集</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">CXType: 型の処理</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section class="tex2jax_ignore mathjax_ignore" id="cxtype">
+<h1>CXType: 型の処理<a class="headerlink" href="#cxtype" title="このヘッドラインへのパーマリンク">¶</a></h1>
+<ul class="simple">
+<li><p>FUNCTION_DECL の result_type</p></li>
+<li><p>PARM_DECL の type</p></li>
+<li><p>FIELD_DECL の type</p></li>
+<li><p>TYPEDEF_DECL の underlying_type</p></li>
+</ul>
+<p>など。</p>
+<section id="id1">
+<h2>基本型<a class="headerlink" href="#id1" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">void</span></code>, <code class="docutils literal notranslate"><span class="pre">int</span></code>, <code class="docutils literal notranslate"><span class="pre">float</span></code> など。
+Type.kind から直接わかる。</p>
+</section>
+<section id="cxtype-pointer-cxtype-lvaluereference">
+<h2>CXType_Pointer / CXType_LValueReference<a class="headerlink" href="#cxtype-pointer-cxtype-lvaluereference" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>基本型か型参照が出現するまで <code class="docutils literal notranslate"><span class="pre">get_pointee()</span></code> で参照を剥がす。</p>
+<section id="const">
+<h3>const<a class="headerlink" href="#const" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p>参照を剥がした各階層で <code class="docutils literal notranslate"><span class="pre">is_const_qualified</span></code> する。
+<code class="docutils literal notranslate"><span class="pre">const</span> <span class="pre">char</span> <span class="pre">*p</span></code> と <code class="docutils literal notranslate"><span class="pre">char</span> <span class="pre">*const</span> <span class="pre">p</span></code> の違い。</p>
+</section>
+</section>
+<section id="cxtype-constantarray">
+<h2>CXType_ConstantArray<a class="headerlink" href="#cxtype-constantarray" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">get_array_element_type</span></code>
+<code class="docutils literal notranslate"><span class="pre">get_array_size</span></code></p>
+</section>
+<section id="cxtype-dependentsizedarray-cxtype-incompletearray">
+<h2>CXType_DependentSizedArray, CXType_IncompleteArray<a class="headerlink" href="#cxtype-dependentsizedarray-cxtype-incompletearray" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">get_array_element_type</span></code></p>
+</section>
+<section id="cxtype-functionproto">
+<h2>CXType_FunctionProto<a class="headerlink" href="#cxtype-functionproto" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>関数ポインタ。
+<code class="docutils literal notranslate"><span class="pre">CXType_FunctionProto</span></code></p>
+</section>
+<section id="cxtype-typedef">
+<h2>CXType_Typedef<a class="headerlink" href="#cxtype-typedef" title="このヘッドラインへのパーマリンク">¶</a></h2>
+</section>
+<section id="cxtype-enum">
+<h2>CXType_Enum<a class="headerlink" href="#cxtype-enum" title="このヘッドラインへのパーマリンク">¶</a></h2>
+</section>
+<section id="cxtype-elaborated">
+<h2>CXType_Elaborated<a class="headerlink" href="#cxtype-elaborated" title="このヘッドラインへのパーマリンク">¶</a></h2>
+</section>
+<section id="cxtype-record">
+<h2>CXType_Record<a class="headerlink" href="#cxtype-record" title="このヘッドラインへのパーマリンク">¶</a></h2>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../index.html">目次</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">CXType: 型の処理</a><ul>
+<li><a class="reference internal" href="#id1">基本型</a></li>
+<li><a class="reference internal" href="#cxtype-pointer-cxtype-lvaluereference">CXType_Pointer / CXType_LValueReference</a><ul>
+<li><a class="reference internal" href="#const">const</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#cxtype-constantarray">CXType_ConstantArray</a></li>
+<li><a class="reference internal" href="#cxtype-dependentsizedarray-cxtype-incompletearray">CXType_DependentSizedArray, CXType_IncompleteArray</a></li>
+<li><a class="reference internal" href="#cxtype-functionproto">CXType_FunctionProto</a></li>
+<li><a class="reference internal" href="#cxtype-typedef">CXType_Typedef</a></li>
+<li><a class="reference internal" href="#cxtype-enum">CXType_Enum</a></li>
+<li><a class="reference internal" href="#cxtype-elaborated">CXType_Elaborated</a></li>
+<li><a class="reference internal" href="#cxtype-record">CXType_Record</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>前のトピックへ</h4>
+  <p class="topless"><a href="../cursor_kind/function_decl.html"
+                        title="前の章へ">FUNCTION_DECL</a></p>
+  <h4>次のトピックへ</h4>
+  <p class="topless"><a href="../../examples/index.html"
+                        title="次の章へ">使用例</a></p>
+  <div role="note" aria-label="source link">
+    <h3>このページ</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/cindex/type/index.md.txt"
+            rel="nofollow">ソースコードを表示</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">クイック検索</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="検索" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="総合索引"
+             >索引</a></li>
+        <li class="right" >
+          <a href="../../examples/index.html" title="使用例"
+             >次へ</a> |</li>
+        <li class="right" >
+          <a href="../cursor_kind/function_decl.html" title="FUNCTION_DECL"
+             >前へ</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">pycindex  ドキュメント</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >clang.cindex パースと情報収集</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">CXType: 型の処理</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2021, ousttrue.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.1.
+    </div>
+  </body>
+</html>

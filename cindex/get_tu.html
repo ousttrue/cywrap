@@ -18,7 +18,7 @@
     
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
-    <link rel="next" title="カーソルを走査する" href="traverse.html" />
+    <link rel="next" title="CXCursor: カーソルを走査する" href="traverse.html" />
     <link rel="prev" title="clang.cindex の python module" href="python_module.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
@@ -28,13 +28,13 @@
           <a href="../genindex.html" title="総合索引"
              accesskey="I">索引</a></li>
         <li class="right" >
-          <a href="traverse.html" title="カーソルを走査する"
+          <a href="traverse.html" title="CXCursor: カーソルを走査する"
              accesskey="N">次へ</a> |</li>
         <li class="right" >
           <a href="python_module.html" title="clang.cindex の python module"
              accesskey="P">前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">pycindex  ドキュメント</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">clang.cindex</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">clang.cindex パースと情報収集</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">C/C++ のソースをパースして TranslaionUnit を得る</a></li> 
       </ul>
     </div>  
@@ -46,17 +46,8 @@
             
   <section class="tex2jax_ignore mathjax_ignore" id="c-c-translaionunit">
 <h1>C/C++ のソースをパースして TranslaionUnit を得る<a class="headerlink" href="#c-c-translaionunit" title="このヘッドラインへのパーマリンク">¶</a></h1>
-<p>path が parse のエントリポイントとなる。
-arguments の与え方で vc の <code class="docutils literal notranslate"><span class="pre">cl.exe</span></code> のようにふるまわせることができる。</p>
-<ul class="simple">
-<li><p>-D による define</p></li>
-<li><p>-I による include パス</p></li>
-<li><p>c++17 などの対応レベル</p></li>
-</ul>
-<p>などをよく使う。</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">NamedTuple</span>
-<span class="kn">import</span> <span class="nn">sys</span>
-<span class="kn">import</span> <span class="nn">pathlib</span>
+<p>path が parse のエントリポイントとなる。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">NamedTuple</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
 <span class="kn">from</span> <span class="nn">clang</span> <span class="kn">import</span> <span class="n">cindex</span>
 
 
@@ -65,8 +56,11 @@ arguments の与え方で vc の <code class="docutils literal notranslate"><spa
     <span class="n">content</span><span class="p">:</span> <span class="nb">str</span>
 
 
-<span class="k">def</span> <span class="nf">get_tu</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">cflags</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">unsaved</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Unsaved</span><span class="p">]]</span> <span class="o">=</span> <span class="bp">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">cindex</span><span class="o">.</span><span class="n">TranslationUnit</span><span class="p">:</span>
-    <span class="n">arguments</span> <span class="o">=</span> <span class="p">(</span>
+<span class="k">def</span> <span class="nf">get_tu</span><span class="p">(</span><span class="n">entrypoint</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+           <span class="o">*</span><span class="p">,</span>
+           <span class="n">includes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="bp">None</span><span class="p">,</span>
+           <span class="n">unsaved</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Unsaved</span><span class="p">]]</span> <span class="o">=</span> <span class="bp">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">cindex</span><span class="o">.</span><span class="n">TranslationUnit</span><span class="p">:</span>
+    <span class="n">arguments</span> <span class="o">=</span> <span class="p">[</span>
         <span class="s2">&quot;-x&quot;</span><span class="p">,</span>
         <span class="s2">&quot;c++&quot;</span><span class="p">,</span>
         <span class="s2">&quot;-target&quot;</span><span class="p">,</span>
@@ -74,13 +68,16 @@ arguments の与え方で vc の <code class="docutils literal notranslate"><spa
         <span class="s2">&quot;-fms-compatibility-version=18&quot;</span><span class="p">,</span>
         <span class="s2">&quot;-fdeclspec&quot;</span><span class="p">,</span>
         <span class="s2">&quot;-fms-compatibility&quot;</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">+</span> <span class="n">cflags</span>
+    <span class="p">]</span>
+    <span class="k">if</span> <span class="n">includes</span><span class="p">:</span>
+        <span class="n">arguments</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;-I{i}&#39;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">includes</span><span class="p">)</span>
 
     <span class="c1"># path of libclang.dll</span>
     <span class="n">cindex</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">library_path</span> <span class="o">=</span> <span class="s1">&#39;C:</span><span class="se">\\</span><span class="s1">Program Files</span><span class="se">\\</span><span class="s1">LLVM</span><span class="se">\\</span><span class="s1">bin&#39;</span>
 
     <span class="n">index</span> <span class="o">=</span> <span class="n">cindex</span><span class="o">.</span><span class="n">Index</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
-    <span class="n">tu</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">arguments</span><span class="p">,</span> <span class="n">unsaved</span><span class="p">,</span>
+
+    <span class="n">tu</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">entrypoint</span><span class="p">,</span> <span class="n">arguments</span><span class="p">,</span> <span class="n">unsaved</span><span class="p">,</span>
                      <span class="n">cindex</span><span class="o">.</span><span class="n">TranslationUnit</span><span class="o">.</span><span class="n">PARSE_DETAILED_PROCESSING_RECORD</span> <span class="o">|</span>
                      <span class="n">cindex</span><span class="o">.</span><span class="n">TranslationUnit</span><span class="o">.</span><span class="n">PARSE_SKIP_FUNCTION_BODIES</span><span class="p">)</span>
 
@@ -97,6 +94,25 @@ arguments の与え方で vc の <code class="docutils literal notranslate"><spa
 <span class="cp">#include</span> <span class="cpf">&quot;c.h&quot;</span><span class="cp"></span>
 </pre></div>
 </div>
+<section id="compiler">
+<h2>compiler 引数<a class="headerlink" href="#compiler" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>arguments の与え方で vc の <code class="docutils literal notranslate"><span class="pre">cl.exe</span></code> のようにふるまわせることができる。</p>
+<ul class="simple">
+<li><p>-D による define</p></li>
+<li><p>-I による include パス</p></li>
+<li><p>c++17 などの対応レベル</p></li>
+</ul>
+<p>などをよく使う。</p>
+</section>
+<section id="flags">
+<h2>flags<a class="headerlink" href="#flags" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">cindex.TranslationUnit.PARSE_SKIP_FUNCTION_BODIES</span></code></p></li>
+</ul>
+<p>など。関数の中身をスキップする。
+言語バインディングの生成をする場合には関数のシグニチャのみが必要。</p>
+<p>マクロの制御などもあり、指定しないと出現しない cursor がある。</p>
+</section>
 </section>
 
 
@@ -106,12 +122,21 @@ arguments の与え方で vc の <code class="docutils literal notranslate"><spa
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">目次</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">C/C++ のソースをパースして TranslaionUnit を得る</a><ul>
+<li><a class="reference internal" href="#compiler">compiler 引数</a></li>
+<li><a class="reference internal" href="#flags">flags</a></li>
+</ul>
+</li>
+</ul>
+
   <h4>前のトピックへ</h4>
   <p class="topless"><a href="python_module.html"
                         title="前の章へ">clang.cindex の python module</a></p>
   <h4>次のトピックへ</h4>
   <p class="topless"><a href="traverse.html"
-                        title="次の章へ">カーソルを走査する</a></p>
+                        title="次の章へ">CXCursor: カーソルを走査する</a></p>
   <div role="note" aria-label="source link">
     <h3>このページ</h3>
     <ul class="this-page-menu">
@@ -140,13 +165,13 @@ arguments の与え方で vc の <code class="docutils literal notranslate"><spa
           <a href="../genindex.html" title="総合索引"
              >索引</a></li>
         <li class="right" >
-          <a href="traverse.html" title="カーソルを走査する"
+          <a href="traverse.html" title="CXCursor: カーソルを走査する"
              >次へ</a> |</li>
         <li class="right" >
           <a href="python_module.html" title="clang.cindex の python module"
              >前へ</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">pycindex  ドキュメント</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="index.html" >clang.cindex</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >clang.cindex パースと情報収集</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">C/C++ のソースをパースして TranslaionUnit を得る</a></li> 
       </ul>
     </div>
