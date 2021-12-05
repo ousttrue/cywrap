@@ -5,4 +5,6 @@
 python_module
 get_tu
 traverse
+cursor_kind/index
+type/index
 ```
