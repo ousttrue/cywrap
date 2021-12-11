@@ -22,7 +22,7 @@
             "program": "gen_cindex_stub.py",
             "args": [
                 "C:/Program Files/LLVM/include/clang-c/Index.h",
-                "${workspaceFolder}/typing/clang/cindex.pyi"
+                "${workspaceFolder}/typings/clang/cindex.pyi"
             ],
             "console": "integratedTerminal",
             "justMyCode": false
