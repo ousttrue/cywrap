@@ -3,3 +3,4 @@ src/pycindex/_version.py
 src/clang
 *.pyc
 build
+/typing

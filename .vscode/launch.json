@@ -16,12 +16,13 @@
             "justMyCode": false
         },
         {
-            "name": "pycindex:CIndex.h",
+            "name": "generate clang.cindex stub",
             "type": "python",
             "request": "launch",
-            "module": "pycindex",
+            "program": "gen_cindex_stub.py",
             "args": [
                 "C:/Program Files/LLVM/include/clang-c/Index.h",
+                "${workspaceFolder}/typing/clang/cindex.pyi"
             ],
             "console": "integratedTerminal",
             "justMyCode": false
