@@ -20,13 +20,13 @@ def run():
     functions = []
     typedef_struct_list = []
 
-    def filter_imgui(*cursor_path: cindex.Cursor):
+    def filter_imgui(*cursor_path: cindex.Cursor) -> bool:
         cursor = cursor_path[-1]
         location: cindex.SourceLocation = cursor.location
         if not location:
-            return
+            return False
         if not location.file:
-            return
+            return False
 
         if location.file.name == args.entrypoint:
             match cursor.kind:
@@ -55,7 +55,9 @@ def run():
                     logger.debug(cursor.kind)
         else:
             pass
-            # return True
+
+        return False
+
     traverse(tu, filter_imgui)
 
     logger.info(

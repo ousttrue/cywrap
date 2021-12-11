@@ -1,9 +1,11 @@
 from typing import List, Tuple
+import types
 import logging
 import argparse
 import pathlib
 import io
 import re
+from inspect import signature
 import pycindex
 from pycindex import cindex
 
@@ -64,7 +66,7 @@ def upper_snake(s: str):
                       lambda mo: ' ' + mo.group(0).upper(), s)).split())
 
 
-def generate(w: io.IOBase, tu, functions: List[Tuple[cindex.Cursor, ...]]):
+def generate_enum(w: io.IOBase, tu, functions: List[Tuple[cindex.Cursor, ...]]):
     used = set()
     for f in functions:
         c = f[-1]
@@ -79,17 +81,44 @@ def generate(w: io.IOBase, tu, functions: List[Tuple[cindex.Cursor, ...]]):
                         children.append(child.spelling)
 
             if len(children) > 1:
-                print(c.spelling)
+                logger.debug(c.spelling)
                 used.add(c.spelling)
 
                 children = remove_prefix(children)
                 children = [upper_snake(child) for child in children]
 
                 name = c.spelling[2:]  # remove prefix CX
-                w.write(f'class {name}(BaseEnumeration):\n')
-                for child in children:
-                    w.write(f'    {child}: ClassVar[{name}]\n')
+                if name == 'TranslationUnit_Flags':
+                    name = 'TranslationUnit'
+                    w.write(f'class {name}(BaseEnumeration):\n')
+                    for child in children:
+                        w.write(f'    PARSE_{child}: ClassVar[{name}]\n')
+                else:
+                    w.write(f'class {name}(BaseEnumeration):\n')
+                    for child in children:
+                        w.write(f'    {child}: ClassVar[{name}]\n')
                 w.write('\n')
+
+
+def generate_instance(w: io.IOBase, obj: object):
+    logger.debug(obj.__class__.__name__)
+    w.write(f'class {obj.__class__.__name__}:\n')
+    for k, v in obj.__class__.__dict__.items():
+        # print(k, v)
+        match v:
+            case types.FunctionType():
+                args = signature(v)
+                w.write(f'    def {k}{args}:')
+                if v.__doc__:
+                    w.write('\n        """')
+                    w.write(v.__doc__)
+                    w.write('"""\n')
+                    w.write('        ...\n')
+                else:
+                    w.write(' ...\n')
+            case property():
+                w.write(f'    {k}: Any\n')
+    w.write('\n')
 
 
 if __name__ == '__main__':
@@ -107,10 +136,15 @@ if __name__ == '__main__':
     dst = pathlib.Path(args.dst).absolute()
     dst.parent.mkdir(parents=True, exist_ok=True)
     with dst.open('w') as w:
-        w.write('''from typing import ClassVar
+        w.write('''from typing import ClassVar, Any
 
 class BaseEnumeration(object):
     pass
 
 ''')
-        generate(w, parser.tu, parser.enums)
+        generate_enum(w, parser.tu, parser.enums)
+
+        # from object instance
+        # generate_instance(w, parser.tu)
+        generate_instance(w, parser.enums[0][0])
+        generate_instance(w, parser.enums[0][0].location)
