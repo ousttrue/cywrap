@@ -88,6 +88,8 @@ def generate_enum(w: io.IOBase, tu, functions: List[Tuple[cindex.Cursor, ...]]):
                 children = [upper_snake(child) for child in children]
 
                 name = c.spelling[2:]  # remove prefix CX
+                if name == 'TypeKind':
+                    children = [child.replace('_', '') for child in children]
                 if name == 'TranslationUnit_Flags':
                     name = 'TranslationUnit'
                     w.write(f'class {name}(BaseEnumeration):\n')
@@ -125,15 +127,17 @@ if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('src')
-    parser.add_argument('dst')
+    parser.add_argument('--src')
+    parser.add_argument('--dst')
     args = parser.parse_args()
 
-    src = pathlib.Path(args.src).absolute()
+    src = pathlib.Path(
+        args.src if args.src else "C:/Program Files/LLVM/include/clang-c/Index.h").absolute()
     parser = Parser(str(src))
     parser.traverse()
 
-    dst = pathlib.Path(args.dst).absolute()
+    dst = pathlib.Path(
+        args.dst if args.dst else "typings/clang/cindex.pyi").absolute()
     dst.parent.mkdir(parents=True, exist_ok=True)
     with dst.open('w') as w:
         w.write('''from typing import ClassVar, Any
@@ -146,5 +150,10 @@ class BaseEnumeration(object):
 
         # from object instance
         # generate_instance(w, parser.tu)
+
+        # cursor
         generate_instance(w, parser.enums[0][0])
+        # location
         generate_instance(w, parser.enums[0][0].location)
+        # type
+        generate_instance(w, parser.functions[0][-1].result_type)

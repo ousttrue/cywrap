@@ -19,11 +19,7 @@
             "name": "generate clang.cindex stub",
             "type": "python",
             "request": "launch",
-            "program": "gen_cindex_stub.py",
-            "args": [
-                "C:/Program Files/LLVM/include/clang-c/Index.h",
-                "${workspaceFolder}/typings/clang/cindex.pyi"
-            ],
+            "module": "pycindex.generate_cindex_stub",
             "console": "integratedTerminal",
             "justMyCode": false
         },
