@@ -1,6 +1,7 @@
 *.egg-info
 src/pycindex/_version.py
-src/clang
+src/clang/
 *.pyc
-build
-/typings
+/build/
+/typings/
+/dist/
