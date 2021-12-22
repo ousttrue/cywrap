@@ -9,7 +9,8 @@ class Unsaved(NamedTuple):
 
 def get_tu(entrypoint: str,
            *,
-           includes: List[str] = None,
+           include_dirs: List[str] = None,
+           flags: List[str] = None,
            unsaved: Optional[List[Unsaved]] = None) -> cindex.TranslationUnit:
     arguments = [
         "-x",
@@ -19,9 +20,12 @@ def get_tu(entrypoint: str,
         "-fms-compatibility-version=18",
         "-fdeclspec",
         "-fms-compatibility",
+        "-std=c++17",
     ]
-    if includes:
-        arguments.extend(f'-I{i}' for i in includes)
+    if include_dirs:
+        arguments.extend(f'-I{i}' for i in include_dirs)
+    if flags:
+        arguments.extend(flags)
 
     # path of libclang.dll
     cindex.Config.library_path = 'C:\\Program Files\\LLVM\\bin'
