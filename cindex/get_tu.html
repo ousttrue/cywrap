@@ -58,7 +58,8 @@
 
 <span class="k">def</span> <span class="nf">get_tu</span><span class="p">(</span><span class="n">entrypoint</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
            <span class="o">*</span><span class="p">,</span>
-           <span class="n">includes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="bp">None</span><span class="p">,</span>
+           <span class="n">include_dirs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="bp">None</span><span class="p">,</span>
+           <span class="n">flags</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="bp">None</span><span class="p">,</span>
            <span class="n">unsaved</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Unsaved</span><span class="p">]]</span> <span class="o">=</span> <span class="bp">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">cindex</span><span class="o">.</span><span class="n">TranslationUnit</span><span class="p">:</span>
     <span class="n">arguments</span> <span class="o">=</span> <span class="p">[</span>
         <span class="s2">&quot;-x&quot;</span><span class="p">,</span>
@@ -68,9 +69,12 @@
         <span class="s2">&quot;-fms-compatibility-version=18&quot;</span><span class="p">,</span>
         <span class="s2">&quot;-fdeclspec&quot;</span><span class="p">,</span>
         <span class="s2">&quot;-fms-compatibility&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;-std=c++17&quot;</span><span class="p">,</span>
     <span class="p">]</span>
-    <span class="k">if</span> <span class="n">includes</span><span class="p">:</span>
-        <span class="n">arguments</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;-I{i}&#39;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">includes</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">include_dirs</span><span class="p">:</span>
+        <span class="n">arguments</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;-I{i}&#39;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">include_dirs</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">flags</span><span class="p">:</span>
+        <span class="n">arguments</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">flags</span><span class="p">)</span>
 
     <span class="c1"># path of libclang.dll</span>
     <span class="n">cindex</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">library_path</span> <span class="o">=</span> <span class="s1">&#39;C:</span><span class="se">\\</span><span class="s1">Program Files</span><span class="se">\\</span><span class="s1">LLVM</span><span class="se">\\</span><span class="s1">bin&#39;</span>
@@ -177,7 +181,7 @@
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2021, ousttrue.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.1.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.2.
     </div>
   </body>
 </html>
